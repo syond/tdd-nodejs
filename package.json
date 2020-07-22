@@ -1,0 +1,25 @@
+{
+  "name": "tdd-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syond/tdd-nodejs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/syond/tdd-nodejs/issues"
+  },
+  "homepage": "https://github.com/syond/tdd-nodejs#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
