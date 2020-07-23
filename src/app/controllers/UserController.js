@@ -8,7 +8,7 @@ class UserController {
   store(request, response) {
     const user = request.body;
 
-    if (!user) response.json({ error: "Something went wrong" });
+    if (!user) response.status(400).send({ error: "Something went wrong" });
 
     const checkUser = database.find((u) => u.email == user.email);
 
@@ -21,18 +21,31 @@ class UserController {
     }
   }
 
-  update(request, response){
+  update(request, response) {
+    const user = request.body;
+
+    const checkUser = database.find((u) => u.id == user.id);
+
+    if (!checkUser) {
+      response.status(400).send();
+    } else {
+      database.push(user);
+
+      response.status(200).json(user);
+    }
+  }
+
+  delete(request, response){
       const user = request.body;
 
-      const checkUser = database.find(u => u.id == user.id);
+      const checkUser = database.findIndex(u => u.id == user.id);
 
-      if(!checkUser){
-        response.status(400).send();
-    } else{
-        database.push(user);
-
-        response.status(200).json(user);
-    }
+      if(checkUser == -1){
+          response.status(400).send();
+      } else{
+        database = database.filter(u => u.id != user.id);
+        response.status(200).send();
+      }
   }
 }
 

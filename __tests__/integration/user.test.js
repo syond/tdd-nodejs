@@ -67,7 +67,7 @@ describe("Users tests", () => {
     expect(response.body).toMatchObject(updateUser);
   });
 
-  it("should not be able to update user passing invalid ID", async () => {
+  it("should not be able to update user witch not exist", async () => {
     const user = await request(app).post('/users').send(users[0]);
 
     const updateUser = {
@@ -81,12 +81,14 @@ describe("Users tests", () => {
     expect(response.status).toBe(400);
   });
 
-  it("should not be able to update user witch not exist", async () => {
-    //TODO
-  });
-
   it("should be able to delete user", async () => {
-    //TODO
+    await request(app).post('/users').send(users[0]);
+    await request(app).post('/users').send(users[0]);
+    const user = await request(app).post('/users').send(users[1]);
+
+    const response = await request(app).delete(`/users/${user.body.id}`).send(user.body);
+
+    expect(response.status).toBe(200);
   });
 
   it("should be able to return status 204 when delete user", async () => {
