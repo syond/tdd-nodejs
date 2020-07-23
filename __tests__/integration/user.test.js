@@ -54,7 +54,7 @@ describe("Users tests", () => {
     expect(response.body).toHaveLength(1);
   });
 
-  it("should be able to update user passing ID", async () => {
+  it("should be able to update user passing valid ID", async () => {
     const user = await request(app).post('/users').send(users[0]);
 
     const updateUser = {
@@ -65,6 +65,20 @@ describe("Users tests", () => {
     const response = await request(app).patch(`/users/${updateUser.id}`).send(updateUser);
 
     expect(response.body).toMatchObject(updateUser);
+  });
+
+  it("should not be able to update user passing invalid ID", async () => {
+    const user = await request(app).post('/users').send(users[0]);
+
+    const updateUser = {
+      ...user.body,
+      id: 5,
+      name: "Robervaldo",
+    }
+
+    const response = await request(app).patch(`/users/${updateUser.id}`).send(updateUser);
+
+    expect(response.status).toBe(400);
   });
 
   it("should not be able to update user witch not exist", async () => {
