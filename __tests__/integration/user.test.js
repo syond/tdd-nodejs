@@ -24,4 +24,10 @@ describe("Users tests", () => {
 
     expect(response.body).toHaveProperty('name');
   });
+  
+  it("should return status 201 when create new user", async () => {
+    const response = await request(app).post('/users').send(users[0]);
+
+    expect(response.status).toBe(201);
+  });
 });

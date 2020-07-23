@@ -5,7 +5,7 @@ class UserController {
     if (!user) {
       response.json({ error: "Something wrong" });
     } else {
-      response.json(user);
+      response.status(201).json(user);
     }
   }
 }
