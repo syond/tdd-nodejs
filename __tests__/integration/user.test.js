@@ -91,11 +91,9 @@ describe("Users tests", () => {
     expect(response.status).toBe(200);
   });
 
-  it("should be able to return status 204 when delete user", async () => {
-    //TODO
-  });
-
   it("should not be able to delete user witch not exist", async () => {
-    //TODO
+    const response = await request(app).delete('/users/51651');
+
+    expect(response.status).toBe(400);
   });
 });
