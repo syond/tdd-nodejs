@@ -1,6 +1,10 @@
 import database from "../../database";
 
 class UserController {
+  index(request, response) {
+    response.json(database);
+  }
+
   store(request, response) {
     const user = request.body;
 

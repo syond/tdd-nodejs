@@ -22,19 +22,19 @@ describe("Users tests", () => {
     database = [];
   });
 
-  it("should create new user", async () => {
+  it("should be able to create new user", async () => {
     const response = await request(app).post("/users").send(users[0]);
 
     expect(response.body).toHaveProperty("name");
   });
 
-  it("should return status 201 when create new user", async () => {
+  it("should be able to return status 201 when create new user", async () => {
     const response = await request(app).post("/users").send(users[0]);
 
     expect(response.status).toBe(201);
   });
 
-  it("should not create new user with same email", async () => {
+  it("should not be able to create new user with same email", async () => {
     await request(app)
       .post("/users")
       .send({ ...users[0], name: "Adriano Souza" });
@@ -44,23 +44,31 @@ describe("Users tests", () => {
     expect(response.status).toBe(400);
   });
 
-  it("should update user", async () => {
+  it("should be able to list all the users", async () => {
+    await request(app).post("/users").send(users[0]);
+
+    const response = await request(app).get("/users");
+
+    expect(response.body).toHaveLength(1);
+  });
+
+  it("should be able to update user", async () => {
     //TODO
   });
 
-  it("should not update user witch not exist", async () => {
+  it("should not be able to update user witch not exist", async () => {
     //TODO
   });
 
-  it("should delete user", async () => {
+  it("should be able to delete user", async () => {
     //TODO
   });
 
-  it("should return status 204 when delete user", async () => {
+  it("should be able to return status 204 when delete user", async () => {
     //TODO
   });
 
-  it("should not delete user witch not exist", async () => {
+  it("should not be able to delete user witch not exist", async () => {
     //TODO
   });
 });
