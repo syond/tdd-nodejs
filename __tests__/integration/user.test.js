@@ -8,11 +8,13 @@ describe("Users tests", () => {
   beforeEach(() => {
     users = [
       {
+        id: 1,
         name: "Fernando Lopes",
         age: "22",
         email: "fernando.lopes@tdd.com",
       },
       {
+        id: 2,
         name: "Adriana Lisboa",
         age: "27",
         email: "adriana.lisboa@tdd.com",
@@ -52,8 +54,17 @@ describe("Users tests", () => {
     expect(response.body).toHaveLength(1);
   });
 
-  it("should be able to update user", async () => {
-    //TODO
+  it("should be able to update user passing ID", async () => {
+    const user = await request(app).post('/users').send(users[0]);
+
+    const updateUser = {
+      ...user.body,
+      name: "Robervaldo",
+    }
+
+    const response = await request(app).patch(`/users/${updateUser.id}`).send(updateUser);
+
+    expect(response.body).toMatchObject(updateUser);
   });
 
   it("should not be able to update user witch not exist", async () => {

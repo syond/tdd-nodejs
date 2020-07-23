@@ -20,6 +20,20 @@ class UserController {
       response.status(201).json(user);
     }
   }
+
+  update(request, response){
+      const user = request.body;
+
+      const checkUser = database.find(u => u.id == user.id);
+
+      if(!checkUser){
+        response.status(400).send();
+    } else{
+        database.push(user);
+
+        response.status(200).json(user);
+    }
+  }
 }
 
 export default new UserController();
