@@ -64,6 +64,12 @@ describe("Users tests", () => {
     expect(response.body).toHaveProperty("id");
   });
 
+  it("should be able to return status 400 if not found specific user by ID", async () => {
+    const response = await request(app).get("/users/51651");
+
+    expect(response.status).toBe(400);
+  });
+
   it("should be able to update user passing valid ID", async () => {
     const user = await request(app).post("/users").send(users[0]);
 
