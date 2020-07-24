@@ -24,98 +24,104 @@ describe("Users tests", () => {
     database = [];
   });
 
-  it("should be able to create new user", async () => {
-    const response = await request(app).post("/users").send(users[0]);
+  describe("index", () => {
+    it("should be able to list all the users", async () => {
+      await request(app).post("/users").send(users[0]);
 
-    expect(response.body).toHaveProperty("name");
+      const response = await request(app).get("/users");
+
+      expect(response.body).toHaveLength(1);
+    });
   });
+  describe("store", () => {
+    it("should be able to create new user", async () => {
+      const response = await request(app).post("/users").send(users[0]);
 
-  it("should be able to return status 201 when create new user", async () => {
-    const response = await request(app).post("/users").send(users[0]);
+      expect(response.body).toHaveProperty("name");
+    });
 
-    expect(response.status).toBe(201);
+    it("should be able to return status 201 when create new user", async () => {
+      const response = await request(app).post("/users").send(users[0]);
+
+      expect(response.status).toBe(201);
+    });
+
+    it("should not be able to create new user with same email", async () => {
+      await request(app)
+        .post("/users")
+        .send({ ...users[0], name: "Adriano Souza" });
+
+      const response = await request(app).post("/users").send(users[0]);
+
+      expect(response.status).toBe(400);
+    });
   });
+  describe("show", () => {
+    it("should be able to list specific user by ID", async () => {
+      const user = await request(app).post("/users").send(users[0]);
 
-  it("should not be able to create new user with same email", async () => {
-    await request(app)
-      .post("/users")
-      .send({ ...users[0], name: "Adriano Souza" });
+      const response = await request(app)
+        .get(`/users/${user.body.id}`)
+        .send(user.body);
 
-    const response = await request(app).post("/users").send(users[0]);
+      expect(response.body).toHaveProperty("id");
+    });
 
-    expect(response.status).toBe(400);
+    it("should be able to return status 400 if not found specific user by ID", async () => {
+      const response = await request(app).get("/users/51651");
+
+      expect(response.status).toBe(400);
+    });
   });
+  describe("update", () => {
+    it("should be able to update user passing valid ID", async () => {
+      const user = await request(app).post("/users").send(users[0]);
 
-  it("should be able to list all the users", async () => {
-    await request(app).post("/users").send(users[0]);
+      const updateUser = {
+        ...user.body,
+        name: "Robervaldo",
+      };
 
-    const response = await request(app).get("/users");
+      const response = await request(app)
+        .patch(`/users/${updateUser.id}`)
+        .send(updateUser);
 
-    expect(response.body).toHaveLength(1);
+      expect(response.body).toMatchObject(updateUser);
+    });
+
+    it("should not be able to update user witch not exist", async () => {
+      const user = await request(app).post("/users").send(users[0]);
+
+      const updateUser = {
+        ...user.body,
+        id: 5,
+        name: "Robervaldo",
+      };
+
+      const response = await request(app)
+        .patch(`/users/${updateUser.id}`)
+        .send(updateUser);
+
+      expect(response.status).toBe(400);
+    });
   });
+  describe("delete", () => {
+    it("should be able to delete user", async () => {
+      await request(app).post("/users").send(users[0]);
+      await request(app).post("/users").send(users[0]);
+      const user = await request(app).post("/users").send(users[1]);
 
-  it("should be able to list specific user by ID", async () => {
-    const user = await request(app).post("/users").send(users[0]);
+      const response = await request(app)
+        .delete(`/users/${user.body.id}`)
+        .send(user.body);
 
-    const response = await request(app)
-      .get(`/users/${user.body.id}`)
-      .send(user.body);
+      expect(response.status).toBe(200);
+    });
 
-    expect(response.body).toHaveProperty("id");
-  });
+    it("should not be able to delete user witch not exist", async () => {
+      const response = await request(app).delete("/users/51651");
 
-  it("should be able to return status 400 if not found specific user by ID", async () => {
-    const response = await request(app).get("/users/51651");
-
-    expect(response.status).toBe(400);
-  });
-
-  it("should be able to update user passing valid ID", async () => {
-    const user = await request(app).post("/users").send(users[0]);
-
-    const updateUser = {
-      ...user.body,
-      name: "Robervaldo",
-    };
-
-    const response = await request(app)
-      .patch(`/users/${updateUser.id}`)
-      .send(updateUser);
-
-    expect(response.body).toMatchObject(updateUser);
-  });
-
-  it("should not be able to update user witch not exist", async () => {
-    const user = await request(app).post("/users").send(users[0]);
-
-    const updateUser = {
-      ...user.body,
-      id: 5,
-      name: "Robervaldo",
-    };
-
-    const response = await request(app)
-      .patch(`/users/${updateUser.id}`)
-      .send(updateUser);
-
-    expect(response.status).toBe(400);
-  });
-
-  it("should be able to delete user", async () => {
-    await request(app).post("/users").send(users[0]);
-    await request(app).post("/users").send(users[0]);
-    const user = await request(app).post("/users").send(users[1]);
-
-    const response = await request(app)
-      .delete(`/users/${user.body.id}`)
-      .send(user.body);
-
-    expect(response.status).toBe(200);
-  });
-
-  it("should not be able to delete user witch not exist", async () => {
-    const response = await request(app).delete("/users/51651");
-
-    expect(response.status).toBe(400);
+      expect(response.status).toBe(400);
+    });
   });
 });
